@@ -54,7 +54,8 @@ def imprimir_menu()->int:
     if repuesta_validada != None:
         return respuesta
     else: 
-        return -1
+        return -1  
+
 
 def mostrar_nombre_jugadores(lista_jugadores_copia:list[dict])->None:
     """
@@ -62,11 +63,14 @@ def mostrar_nombre_jugadores(lista_jugadores_copia:list[dict])->None:
     Muestra el nombre y la posicion con un formato especifico
     return = None
     """
-    imprimir_dato("\n Nombre jugador   - Posición.")
-    contador = 0
-    for jugador in lista_jugadores_copia:
-        imprimir_dato("{0}) {1} - {2}".format(contador,jugador["nombre"],jugador["posicion"]))
-        contador += 1
+    if len(lista_jugadores_copia) != 0:
+        imprimir_dato("\n Nombre jugador   - Posición.")
+        contador = 0
+        for jugador in lista_jugadores_copia:
+            imprimir_dato("{0}) {1} - {2}".format(contador,jugador["nombre"],jugador["posicion"]))
+            contador += 1
+    else:
+        imprimir_dato("la lista se encuentra vacia")
 
 def estadisticas_jugador(lista_jugadores_copia:list[dict])->list[dict]:
     """
@@ -74,29 +78,33 @@ def estadisticas_jugador(lista_jugadores_copia:list[dict])->list[dict]:
     muestra el jugador segun el indice ingresado.
     retorna una lista con el indce del jugador
     """
-    mostrar_nombre_jugadores(lista_jugadores_copia)
-    indice = input("ingrese el indice del jugador que desea ver sus estadisticas: ")
-    indice_validado = re.match(r"^[0-9]{1}|[1]{1}[0-2]{1}$",indice)
-    lista_aux = []
-    
-    if indice_validado != None:
-        indice_int = int(indice)
-        if indice_int < len(lista_jugadores_copia):
-            lista_aux = lista_jugadores_copia[indice_int]
-            for clave in lista_jugadores_copia[indice_int]:
-                if  clave == "logros":
-                    break
-                elif clave != "estadisticas":
-                    imprimir_dato(" {0} : {1} ".format(clave,lista_jugadores_copia[indice_int][clave]))
-                else:
-                    for clave_estad,valores in lista_jugadores_copia[indice_int]["estadisticas"].items():
-                        imprimir_dato(" {0} : {1} ".format(clave_estad,valores))
-            return lista_aux
-        else: 
-            imprimir_dato("el indice supera el largo de la lista")
-            return -1
+    if len(lista_jugadores_copia) != 0:
+        mostrar_nombre_jugadores(lista_jugadores_copia)
+        indice = input("ingrese el indice del jugador que desea ver sus estadisticas: ")
+        indice_validado = re.match(r"^[0-9]{1}|[1]{1}[0-2]{1}$",indice)
+        lista_aux = []
+        
+        if indice_validado != None:
+            indice_int = int(indice)
+            if indice_int < len(lista_jugadores_copia):
+                lista_aux = lista_jugadores_copia[indice_int]
+                for clave in lista_jugadores_copia[indice_int]:
+                    if  clave == "logros":
+                        break
+                    elif clave != "estadisticas":
+                        imprimir_dato(" {0} : {1} ".format(clave,lista_jugadores_copia[indice_int][clave]))
+                    else:
+                        for clave_estad,valores in lista_jugadores_copia[indice_int]["estadisticas"].items():
+                            imprimir_dato(" {0} : {1} ".format(clave_estad,valores))
+                return lista_aux
+            else: 
+                imprimir_dato("el indice supera el largo de la lista")
+                return -1
+        else:
+            imprimir_dato("indice invalido")
+
     else:
-        imprimir_dato("indice invalido")
+        imprimir_dato("la lista se encuentra vacia")
 
 def exportar_csv(jugadores_estadistica:list[dict])->None:
     """
@@ -145,7 +153,9 @@ def validar_jugador_estadistica(lista_jugadores_copia:list[dict])->None:
         if respuesta_validada != None :
             if respuesta.lower() == "si":
                 exportar_csv(jugador_estadisticas)
-            else:
+            elif respuesta.lower() == "no":
+                pass
+            else:   
                 imprimir_dato("respuesta invalida")     
         else:
              imprimir_dato("La opcion es incorrecta")
@@ -157,33 +167,36 @@ def mostrar_logros_NBA(lista_jugadores_copia:list[dict],flag:bool)->None:
     se muestra las estadisticas de los jugadores o el promedio del equipo
     return = None
     """
-    mostrar_nombre_jugadores(lista_jugadores_copia)
-    
-    imprimir_dato("\n")
-    jugador_ingresado = input("Ingrese el nombre del jugador: ")
-    jugador_validado = re.match(r"^[A-Za-z ]+$",jugador_ingresado)
-    flag_nombre = True
-
-    if jugador_validado != None:
+    if len(lista_jugadores_copia) != 0:
+        mostrar_nombre_jugadores(lista_jugadores_copia)
+        
         imprimir_dato("\n")
-        for jugador in lista_jugadores_copia: 
-            nombre = re.search(jugador_ingresado.lower(),(jugador["nombre"]).lower())
-            if nombre != None:
-                flag_nombre = False
-                if flag == False:
-                    for indice in range(len(jugador["logros"])):
-                        imprimir_dato("{0}".format(jugador["logros"][indice]))
-                else:
-                    miembro = "Miembro del Salon de la Fama del Baloncesto"
-                    if miembro in jugador["logros"]:
-                        imprimir_dato(" {0} se encuentra en el salon de la fama.".format(jugador["nombre"]))
+        jugador_ingresado = input("Ingrese el nombre del jugador: ")
+        jugador_validado = re.match(r"^[A-Za-z ]+$",jugador_ingresado)
+        flag_nombre = True
+
+        if jugador_validado != None:
+            imprimir_dato("\n")
+            for jugador in lista_jugadores_copia: 
+                nombre = re.search(jugador_ingresado.lower(),(jugador["nombre"]).lower())
+                if nombre != None:
+                    flag_nombre = False
+                    if flag == False:
+                        for indice in range(len(jugador["logros"])):
+                            imprimir_dato("{0}".format(jugador["logros"][indice]))
                     else:
-                        imprimir_dato("No se encuentra en el salon de la fama.")
-        if flag_nombre:
-            imprimir_dato("El nombre no existe en la base de datos")            
-                
+                        miembro = "Miembro del Salon de la Fama del Baloncesto"
+                        if miembro in jugador["logros"]:
+                            imprimir_dato(" {0} se encuentra en el salon de la fama.".format(jugador["nombre"]))
+                        else:
+                            imprimir_dato("No se encuentra en el salon de la fama.")
+            if flag_nombre:
+                imprimir_dato("El nombre no existe en la base de datos")       
+                        
+        else:
+            imprimir_dato("El nombre ingresado es incorrecto")
     else:
-        imprimir_dato("El nombre ingresado es incorrecto")
+            imprimir_dato("la lista se encuentra vacia") 
 
 def calcular_mostrar_promedio_puntos (lista_jugadores_copia:list[dict])->None:
     """
@@ -191,18 +204,21 @@ def calcular_mostrar_promedio_puntos (lista_jugadores_copia:list[dict])->None:
     Saca el promedio de puntos por partido del Dream Team
     return = None
     """
-    acumulador = 0
-    contador = 0
     if len(lista_jugadores_copia) != 0:
-        for jugador in lista_jugadores_copia:
-            acumulador += float(jugador["estadisticas"]["promedio_puntos_por_partido"])
-            contador += 1 
-        
-    else:
-        imprimir_dato("La lista esta vacia")
+        acumulador = 0
+        contador = 0
+        if len(lista_jugadores_copia) != 0:
+            for jugador in lista_jugadores_copia:
+                acumulador += float(jugador["estadisticas"]["promedio_puntos_por_partido"])
+                contador += 1 
+            
+        else:
+            imprimir_dato("La lista esta vacia")
 
-    promedio = acumulador / contador
-    imprimir_dato("Promedio de puntos por partido del equipo Dream Team: {0}".format(promedio))
+        promedio = acumulador / contador
+        imprimir_dato("Promedio de puntos por partido del equipo Dream Team: {0}".format(promedio))
+    else:
+            imprimir_dato("la lista se encuentra vacia") 
 
 def calcular_mostrar_key(lista_jugadores_copia:list[dict],key:str,flag:bool=False)->None:
     """
@@ -210,21 +226,25 @@ def calcular_mostrar_key(lista_jugadores_copia:list[dict],key:str,flag:bool=Fals
     Calula el mayor recorriendo la lista segun la key y lo imprime y el bool es por si comparten podio.
     return = None
     """
-    if key == "asistencias_totales" or key == "robotes_totales" or key == "temporadas":
-        key_tipo = int
-    else:
-        key_tipo = float
-    for jugador in lista_jugadores_copia:
-        if lista_jugadores_copia[0] == jugador or key_tipo( key_tipo(jugador["estadisticas"][key] > jugador_aux["estadisticas"][key]) ):
-            jugador_aux = jugador
-
-    if flag:
+    if len(lista_jugadores_copia) != 0:
+        if key == "asistencias_totales" or key == "robotes_totales" or key == "temporadas":
+            key_tipo = int
+        else:
+            key_tipo = float
         for jugador in lista_jugadores_copia:
-            if key_tipo(jugador_aux["estadisticas"]["temporadas"]) == key_tipo(jugador["estadisticas"]["temporadas"]):
-                imprimir_dato("Nombre:{0} - {1}:{2}".format(jugador["nombre"],key,jugador["estadisticas"][key]))
+            if lista_jugadores_copia[0] == jugador or key_tipo( key_tipo(jugador["estadisticas"][key] > jugador_aux["estadisticas"][key]) ):
+                jugador_aux = jugador
+
+        if flag:
+            for jugador in lista_jugadores_copia:
+                if key_tipo(jugador_aux["estadisticas"]["temporadas"]) == key_tipo(jugador["estadisticas"]["temporadas"]):
+                    imprimir_dato("Nombre:{0} - {1}:{2}".format(jugador["nombre"],key,jugador["estadisticas"][key]))
+
+        else:
+            imprimir_dato("Nombre:{0} - {1}:{2}".format(jugador_aux["nombre"],key,jugador_aux["estadisticas"][key]))
 
     else:
-        imprimir_dato("Nombre:{0} - {1}:{2}".format(jugador_aux["nombre"],key,jugador_aux["estadisticas"][key]))
+        imprimir_dato("la lista se enceuntra vacia")
 
 def mostrar_jugadres_segun_dato_ingresado(lista_jugadores_copia:list[dict],key:str)->None:
     """
@@ -232,22 +252,25 @@ def mostrar_jugadres_segun_dato_ingresado(lista_jugadores_copia:list[dict],key:s
     Muesrta el mayor recorriendo la lista segun la key pasada
     return = None
     """
-    valor = input("ingrese el valor: ")
-    imprimir_dato("\n")
-    valor_validado = re.match(r"^[0-9 ]+$",valor)
-    flag = True
+    if len(lista_jugadores_copia) != 0:
+        valor = input("ingrese el valor: ")
+        imprimir_dato("\n")
+        valor_validado = re.match(r"^[0-9 ]+$",valor)
+        flag = True
 
-    if valor_validado != None:
-        key_tipo = float
-        for jugador in lista_jugadores_copia:
+        if valor_validado != None:
+            key_tipo = float
+            for jugador in lista_jugadores_copia:
 
-            if key_tipo(valor) < key_tipo(jugador["estadisticas"][key]):
-                imprimir_dato("Nombre: {0} - {1}: {2}".format(jugador["nombre"],key,jugador["estadisticas"][key]))
-                flag = False
-        if flag:
-            imprimir_dato("Ningun jugador supera el valor ingresado")
+                if key_tipo(valor) < key_tipo(jugador["estadisticas"][key]):
+                    imprimir_dato("Nombre: {0} - {1}: {2}".format(jugador["nombre"],key,jugador["estadisticas"][key]))
+                    flag = False
+            if flag:
+                imprimir_dato("Ningun jugador supera el valor ingresado")
+        else:
+            imprimir_dato("El valor ingresado es incorrecto:")
     else:
-        imprimir_dato("El valor ingresado es incorrecto:")
+        imprimir_dato("la lista se enceuntra vacia")
 
 def promedio_pts_partido_ecluyente(lista_jugadores_copia:list[dict])->None:
     """
@@ -255,25 +278,28 @@ def promedio_pts_partido_ecluyente(lista_jugadores_copia:list[dict])->None:
     Saca el promedio de puntos por partido exclueyndo al de menor puntaje
     return = None
     """
-    jugador_aux = {}
-    acumulador = 0
-    contador = 0 
-    for jugador in lista_jugadores_copia:
+    if len(lista_jugadores_copia) != 0:
+        jugador_aux = {}
+        acumulador = 0
+        contador = 0 
+        for jugador in lista_jugadores_copia:
 
-        if lista_jugadores_copia[0] == jugador or \
-          float(jugador_aux["estadisticas"]["promedio_puntos_por_partido"]) > jugador["estadisticas"]["promedio_puntos_por_partido"] :
-            jugador_aux = jugador
+            if lista_jugadores_copia[0] == jugador or \
+            float(jugador_aux["estadisticas"]["promedio_puntos_por_partido"]) > jugador["estadisticas"]["promedio_puntos_por_partido"] :
+                jugador_aux = jugador
 
-    for jugador in lista_jugadores_copia:
-        if jugador == jugador_aux:
-            pass
-        else:
-            acumulador += float(jugador["estadisticas"]["promedio_puntos_por_partido"])
-            contador += 1
+        for jugador in lista_jugadores_copia:
+            if jugador == jugador_aux:
+                pass
+            else:
+                acumulador += float(jugador["estadisticas"]["promedio_puntos_por_partido"])
+                contador += 1
 
-    promedio = acumulador / contador
+        promedio = acumulador / contador
 
-    imprimir_dato("El promedio del Dream Team sin el menor promedio es: {0}".format(promedio))
+        imprimir_dato("El promedio del Dream Team sin el menor promedio es: {0}".format(promedio))
+    else:
+        imprimir_dato("la lista se enceuntra vacia")
 
 def mayor_logros_obtenidos(lista_jugadores_copia:list[dict])->None:
     """
@@ -281,14 +307,17 @@ def mayor_logros_obtenidos(lista_jugadores_copia:list[dict])->None:
     Muestra al jugador con mas logros obtenidos
     return = None
     """
-    for jugador in lista_jugadores_copia:
+    if len(lista_jugadores_copia) != 0:
+        for jugador in lista_jugadores_copia:
 
-        if jugador == lista_jugadores_copia[0] or len(jugador_aux["logros"]) < len(jugador["logros"]):
+            if jugador == lista_jugadores_copia[0] or len(jugador_aux["logros"]) < len(jugador["logros"]):
 
-            jugador_aux = jugador
-    imprimir_dato("El jugador con mas logros es: {0}".format(jugador_aux["nombre"]))
-    for estadisticas in jugador_aux["logros"]:
-        imprimir_dato("{0}".format(estadisticas))
+                jugador_aux = jugador
+        imprimir_dato("El jugador con mas logros es: {0}".format(jugador_aux["nombre"]))
+        for estadisticas in jugador_aux["logros"]:
+            imprimir_dato("{0}".format(estadisticas))
+    else:
+        imprimir_dato("la lista se enceuntra vacia")
 
 def ordenar_posicion_valor(lista_jugadores_copia:list[dict])->None:
     """
@@ -297,37 +326,40 @@ def ordenar_posicion_valor(lista_jugadores_copia:list[dict])->None:
     las posiciciones en la cancha.    
     return = None
     """
-    valor = input("ingrese el valor: ")
-    imprimir_dato("\n")
-    valor_validado = re.match(r"^[0-9 ]+$",valor)
-    flag = True
+    if len(lista_jugadores_copia) != 0:
+        valor = input("ingrese el valor: ")
+        imprimir_dato("\n")
+        valor_validado = re.match(r"^[0-9 ]+$",valor)
+        flag = True
 
-    if valor_validado != None:
-        lista_posicion =["Base","Escolta","Alero","Ala-Pivot","Pivot"]
-        indice = 0
-        contador = 0
         if valor_validado != None:
-            key_tipo = float
-            flag_while = True
-            while flag_while:
-                for jugador in lista_jugadores_copia:
-                    if jugador["posicion"] == lista_posicion[indice] and \
-                        key_tipo(jugador["estadisticas"]["porcentaje_tiros_de_campo"]) > key_tipo(valor):
-                            imprimir_dato("Nombre: {0} - Posicion: {1} - Porcentaje tirpos de campo: {2} ".format(jugador["nombre"],
-                                                                                                                jugador["posicion"],
-                                                                                jugador["estadisticas"]["porcentaje_tiros_de_campo"]))
-                            flag = False
-                    contador += 1
-                    
-                    if contador == 12:
-                        contador = 0
-                        indice += 1
-                    if indice == 5:
-                        flag_while = False
-            if flag:
-                imprimir_dato("Ningun jugador supera el valor ingresado")
+            lista_posicion =["Base","Escolta","Alero","Ala-Pivot","Pivot"]
+            indice = 0
+            contador = 0
+            if valor_validado != None:
+                key_tipo = float
+                flag_while = True
+                while flag_while:
+                    for jugador in lista_jugadores_copia:
+                        if jugador["posicion"] == lista_posicion[indice] and \
+                            key_tipo(jugador["estadisticas"]["porcentaje_tiros_de_campo"]) > key_tipo(valor):
+                                imprimir_dato("Nombre: {0} - Posicion: {1} - Porcentaje tirpos de campo: {2} ".format(jugador["nombre"],
+                                                                                                                    jugador["posicion"],
+                                                                                    jugador["estadisticas"]["porcentaje_tiros_de_campo"]))
+                                flag = False
+                        contador += 1
+                        
+                        if contador == 12:
+                            contador = 0
+                            indice += 1
+                        if indice == 5:
+                            flag_while = False
+                if flag:
+                    imprimir_dato("Ningun jugador supera el valor ingresado")
+        else:
+            imprimir_dato("El valor ingresado es incorrecto:")
     else:
-        imprimir_dato("El valor ingresado es incorrecto:")
+        imprimir_dato("la lista se enceuntra vacia")
 
 
         
