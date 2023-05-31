@@ -1,6 +1,7 @@
 from funciones import (leer_archivo,imprimir_menu,mostrar_nombre_jugadores,mostrar_logros_NBA,validar_jugador_estadistica,
                        calcular_mostrar_promedio_puntos,imprimir_dato,calcular_mostrar_key,mayor_logros_obtenidos,
-                       mostrar_jugadres_segun_dato_ingresado,promedio_pts_partido_ecluyente,ordenar_posicion_valor)
+                       mostrar_jugadres_segun_dato_ingresado,promedio_pts_partido_ecluyente,ordenar_posicion_valor,
+                       jugadores_posicion,ordenar_cantidad_all_star,jugador_mejor_estadistica)
 
 lista_jugadores = leer_archivo(r"C:\Users\pablo\Desktop\parcial_nba_noot\dt.json")
 lista_jugadores_copia = lista_jugadores.copy()
@@ -49,6 +50,14 @@ def parcial_nba(lista_jugadores_copia):
         elif respuesta == "20":
            pass
         elif respuesta == "21":
+           jugadores_posicion(lista_jugadores_copia)
+        elif respuesta == "22":
+           ordenar_cantidad_all_star(lista_jugadores_copia)
+        elif respuesta == "23":
+         jugador_mejor_estadistica(lista_jugadores_copia)
+        elif respuesta == "24":
+         jugador_mejor_estadistica(lista_jugadores_copia,True)
+        elif respuesta == "25":
             break
         else:
             imprimir_dato("Respuesta incorrecta, vuelva a intentarlo.\n")

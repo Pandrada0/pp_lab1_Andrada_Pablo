@@ -47,7 +47,11 @@ def imprimir_menu()->int:
                     "18- Mostrar el jugador con la mayor cantidad de temporadas jugadas \n"
                     "19- Ordenados por posición en la cancha, que hayan tenido un porcentaje de tiros de campo superior al valor\n"
                     "20- Bonus \n"
-                    "21- Salir  \n")
+                    "21- Determinar la cantidad de jugadores que hay por cada posición. \n"
+                    "22- Mostrar la lista de jugadores ordenadas por la cantidad de All-Star de forma \n"
+                    "23- Determinar qué jugador tiene las mejores estadísticas en cada valor. \n"
+                    "24- Determinar qué jugador tiene las mejores estadísticas de todos. \n"
+                    "25- Salir  \n")
 
     respuesta = input("ingrese la opcion que desea: ")
     repuesta_validada = re.match(r"^[0-9]|[1]{1}[0-9]{1}|[2]{1}[0]{1}$",respuesta)
@@ -361,24 +365,102 @@ def ordenar_posicion_valor(lista_jugadores_copia:list[dict])->None:
     else:
         imprimir_dato("la lista se enceuntra vacia")
 
+  
+def jugadores_posicion(lista_jugadores_copia:list[dict])-> None:
 
-        
+    """
+    Recibe una copia de la lista de jugadores (list[dict])
+    Cuenta la cantidad de jugadores que se encuentran en las distintas posiciones.   
+    return = None
+    """
+    contador = 0
+    acumulador = 0
+    indice = 0
+    flag_while = True
+    lista_posiciones = ["Base","Escolta","Alero","Ala-Pivot","Pivot"]
 
+    while(flag_while):
+        contador = 0
+        acumulador = 0
+        flag_while = False
+        for jugador in lista_jugadores_copia:
 
+            if indice > 4 :
+                break
+            if jugador["posicion"] == lista_posiciones[indice]:
+                acumulador += 1
+                flag_while = True
+            contador += 1
+
+            if contador == len(lista_jugadores_copia) -1:
+                imprimir_dato("{0}: {1}".format(lista_posiciones[indice],acumulador))
+                indice += 1
+                
             
+def ordenar_cantidad_all_star (lista_jugadores_copia:list[dict])->None:
+    
+    """
+    Recibe una copia de la lista de jugadores (list[dict])
+    compara la cantidad de all-star de todos los jugadores lor ordena y muestra
+    return = None
+    """
+    lista_all_star = []
+    for jugador in lista_jugadores_copia:
+
+        for indice in range(len(jugador["logros"])):
+
+            if  re.search("All-Star",jugador["logros"][indice]):
+                lista_all_star.append("{0}({1})".format(jugador["nombre"],jugador["logros"][indice]))
+
+    flag_while = True
+    rango = len(lista_all_star) -1
+   
+    while(flag_while):
+        flag_while = False
+        for indice in range(rango):
+            
+            all_star_a = re.findall(r"[0-9]{2}|[0-9]{1}",lista_all_star[indice])
+            all_star_b = re.findall(r"[0-9]{2}|[0-9]{1}",lista_all_star[indice+1])
+            if  int(all_star_a[0]) < int(all_star_b[0]):
+                lista_all_star[indice],lista_all_star[indice+1] = lista_all_star[indice+1],lista_all_star[indice]
+                flag_while = True
+
+    for indice in lista_all_star:
+        imprimir_dato(indice)
+    
 
 
+def jugador_mejor_estadistica(lista_jugadores_copia:list[dict],flag:bool=False)->None:
+    """
+    Recibe una copia de la lista de jugadores (list[dict]) y un bool
+    con la lista recibida determina que jugador tiene mayor puntaje en cada estadistica,
+    con el bool que recibimos mostramos cual es el jugador con mejores estadisticas.
+    return = None
+    """
+    lista_aux = []
+    claves = list(lista_jugadores_copia[0]["estadisticas"].keys())
+    dict_aux = {}
+    for estadistica in claves:
+        for jugador in lista_jugadores_copia:
 
+            if lista_jugadores_copia[0] == jugador or jugador_aux["estadisticas"][estadistica] < jugador["estadisticas"][estadistica]:
+                jugador_aux = jugador
 
+        lista_aux.append("Mayor {2}: {0} ({1})".format(jugador_aux["nombre"],jugador_aux["estadisticas"][estadistica],estadistica))
 
+        if jugador_aux["nombre"] in dict_aux:
+          dict_aux[jugador_aux["nombre"]] += 1 
 
+        else:
+            dict_aux[jugador_aux["nombre"]] = 1 
 
-
-
-
-
-
-
-
-
+    if flag == False:
+        for estadistica in lista_aux:
+            imprimir_dato(estadistica)
+    else:
+        for clave, valor in dict_aux.items():
+            if flag:
+                print("\n")
+                imprimir_dato("El que mejor estadisticas tiene es: {0}".format(clave))
+                flag = False
 
